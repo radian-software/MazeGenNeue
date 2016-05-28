@@ -4,7 +4,9 @@ package mazegen.maze;
 public interface Maze {
 
     public int getDimensionCount();
+
     public int[] getShape();
-    public boolean isWall(MazeCoordinate cell, Direction side);
+
+    public boolean hasWall(MazeCoordinate coordinate, Direction side);
 
 }
