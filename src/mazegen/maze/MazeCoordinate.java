@@ -16,7 +16,7 @@ public class MazeCoordinate {
 
     private final int[] coordinates;
 
-    public MazeCoordinate(int[] coordinates) {
+    public MazeCoordinate(int... coordinates) {
         Require.nonEmpty(coordinates, "coordinates");
         this.coordinates = coordinates;
     }
@@ -31,6 +31,16 @@ public class MazeCoordinate {
 
     public int getCoordinate(int dimension) {
         return coordinates[dimension];
+    }
+
+    public MazeCoordinate offset(Direction... directions) {
+        Require.nonNull(directions, "directions");
+        int[] newCoordinates = new int[coordinates.length];
+        System.arraycopy(coordinates, 0, newCoordinates, 0, coordinates.length);
+        for (Direction dir : directions) {
+            newCoordinates[dir.getDimension()] += dir.getSignInt();
+        }
+        return new MazeCoordinate(newCoordinates);
     }
 
     @Override
