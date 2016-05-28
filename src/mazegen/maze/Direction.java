@@ -4,6 +4,9 @@ package mazegen.maze;
 import mazegen.util.Require;
 import mazegen.util.Sign;
 
+/**
+ * See MazeCoordinate.
+ */
 public class Direction {
 
     public static final String[] DIMENSION_NAMES = {"x", "y", "z", "w"};
