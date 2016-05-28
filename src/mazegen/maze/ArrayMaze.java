@@ -135,11 +135,13 @@ public class ArrayMaze implements Maze {
         return indices;
     }
 
-    public boolean isWritable(MazeCoordinate coordinate, Direction side) {
-        return isWritable(toIndices(coordinate, side), side);
+    public boolean isWritable(MazeFace face) {
+        return isWritable(toIndices(face.getCoordinate(), face.getSide()), face.getSide());
     }
 
-    public boolean hasWall(MazeCoordinate coordinate, Direction side) {
+    public boolean hasWall(MazeFace face) {
+        MazeCoordinate coordinate = face.getCoordinate();
+        Direction side = face.getSide();
         try {
             return cells.get(toIndices(coordinate, side)).hasWall(side.getDimension());
         }
@@ -148,7 +150,9 @@ public class ArrayMaze implements Maze {
         }
     }
 
-    protected void setWall(MazeCoordinate coordinate, Direction side, boolean isWall) {
+    protected void setWall(MazeFace face, boolean isWall) {
+        MazeCoordinate coordinate = face.getCoordinate();
+        Direction side = face.getSide();
         int[] indices = toIndices(coordinate, side);
         if (!isWritable(indices, side)) {
             throw new IndexOutOfBoundsException("face is not writable");
@@ -156,12 +160,12 @@ public class ArrayMaze implements Maze {
         cells.get(indices).setWall(side.getDimension(), isWall);
     }
 
-    protected void addWall(MazeCoordinate coordinate, Direction side) {
-        setWall(coordinate, side, true);
+    protected void addWall(MazeFace face) {
+        setWall(face, true);
     }
 
-    protected void removeWall(MazeCoordinate coordinate, Direction side) {
-        setWall(coordinate, side, false);
+    protected void removeWall(MazeFace face) {
+        setWall(face, false);
     }
 
     @Override
@@ -184,10 +188,14 @@ public class ArrayMaze implements Maze {
     }
 
     private char getFrontLeftCornerChar(MazeCoordinate coordinate) {
-        boolean left = hasWall(coordinate.offset(Direction.LEFT), Direction.FRONT);
-        boolean right = hasWall(coordinate, Direction.FRONT);
-        boolean front = hasWall(coordinate.offset(Direction.FRONT), Direction.LEFT);
-        boolean back = hasWall(coordinate, Direction.LEFT);
+        MazeFace leftFace = new MazeFace(coordinate.offset(Direction.LEFT), Direction.FRONT),
+                rightFace = new MazeFace(coordinate, Direction.FRONT),
+                frontFace = new MazeFace(coordinate.offset(Direction.FRONT), Direction.LEFT),
+                backFace = new MazeFace(coordinate, Direction.LEFT);
+        boolean left = hasWall(leftFace);
+        boolean right = hasWall(rightFace);
+        boolean front = hasWall(frontFace);
+        boolean back = hasWall(backFace);
         if (left) {
             //  .O
             // -+.
@@ -357,17 +365,21 @@ public class ArrayMaze implements Maze {
     }
 
     private char getFrontChar(MazeCoordinate coordinate) {
-        return hasWall(coordinate, Direction.FRONT) ? '─' : ' ';
+        MazeFace face = new MazeFace(coordinate, Direction.FRONT);
+        return hasWall(face) ? '─' : ' ';
     }
 
     private char getLeftChar(MazeCoordinate coordinate) {
-        return hasWall(coordinate, Direction.LEFT) ? '│' : ' ';
+        MazeFace face = new MazeFace(coordinate, Direction.LEFT);
+        return hasWall(face) ? '│' : ' ';
     }
 
     private char getCenterChar(MazeCoordinate coordinate) {
         if (getDimensionCount() == 2) return ' ';
-        boolean down = hasWall(coordinate, Direction.DOWN);
-        boolean up = hasWall(coordinate, Direction.UP);
+        MazeFace bottomFace = new MazeFace(coordinate, Direction.DOWN),
+                topFace = new MazeFace(coordinate, Direction.UP);
+        boolean down = hasWall(bottomFace);
+        boolean up = hasWall(topFace);
         if (down) {
             if (up) {
                 return '≶';

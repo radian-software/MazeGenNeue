@@ -7,6 +7,6 @@ public interface Maze {
 
     public int[] getShape();
 
-    public boolean hasWall(MazeCoordinate coordinate, Direction side);
+    public boolean hasWall(MazeFace face);
 
 }
