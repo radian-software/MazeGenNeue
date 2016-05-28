@@ -2,18 +2,21 @@
 package mazegen.maze;
 
 import mazegen.util.ArrayUtil;
+import mazegen.util.Require;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 public class MazeCoordinate {
 
     private final int[] coordinates;
 
     public MazeCoordinate(int[] coordinates) {
-        Objects.requireNonNull(coordinates, "coordinates cannot be null");
-        if (coordinates.length == 0) throw new IllegalArgumentException("coordinates cannot be empty");
+        Require.nonEmpty(coordinates, "coordinates");
         this.coordinates = coordinates;
+    }
+
+    public int getDimensionCount() {
+        return coordinates.length;
     }
 
     public int[] getCoordinates() {
