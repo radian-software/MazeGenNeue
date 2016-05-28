@@ -212,7 +212,7 @@ public class ArrayMaze implements Maze {
                         //  |O
                         // -+-
                         //  |
-                        return '+';
+                        return '┼';
                     }
                     else {
                         //   O
