@@ -6,6 +6,15 @@ import mazegen.util.Sign;
 
 public class Direction {
 
+    public static final String[] DIMENSION_NAMES = {"x", "y", "z", "w"};
+
+    public static final Direction LEFT = new Direction(0, Sign.NEGATIVE);
+    public static final Direction RIGHT = new Direction(0, Sign.POSITIVE);
+    public static final Direction FRONT = new Direction(1, Sign.NEGATIVE);
+    public static final Direction BACK = new Direction(1, Sign.POSITIVE);
+    public static final Direction DOWN = new Direction(2, Sign.NEGATIVE);
+    public static final Direction UP = new Direction(2, Sign.POSITIVE);
+
     private final int dimension;
     private final Sign sign;
 
@@ -34,6 +43,18 @@ public class Direction {
         return sign;
     }
 
+    public boolean isPositive() {
+        return sign.isPositive();
+    }
+
+    public boolean isNegative() {
+        return sign.isNegative();
+    }
+
+    public int getSignInt() {
+        return sign.toInt();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,7 +76,7 @@ public class Direction {
 
     @Override
     public String toString() {
-        return sign.toString() + dimension;
+        return sign.toString() + (dimension < 4 ? DIMENSION_NAMES[dimension] : dimension);
     }
 
 }
