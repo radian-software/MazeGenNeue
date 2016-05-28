@@ -5,21 +5,25 @@ public enum Sign {
 
     POSITIVE, NEGATIVE;
 
+    public boolean isPositive() {
+        return this == POSITIVE;
+    }
+
+    public boolean isNegative() {
+        return this == NEGATIVE;
+    }
+
+    public int toInt() {
+        return isPositive() ? 1 : -1;
+    }
+
     public Sign invert() {
-        switch (this) {
-            case POSITIVE: return NEGATIVE;
-            case NEGATIVE: return POSITIVE;
-            default: throw new AssertionError();
-        }
+        return isPositive() ? NEGATIVE : POSITIVE;
     }
 
     @Override
     public String toString() {
-        switch (this) {
-            case POSITIVE: return "+";
-            case NEGATIVE: return "-";
-            default: throw new AssertionError();
-        }
+        return isPositive() ? "+" : "-";
     }
 
 }
