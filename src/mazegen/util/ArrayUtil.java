@@ -3,6 +3,8 @@ package mazegen.util;
 
 public final class ArrayUtil {
 
+    private ArrayUtil() {}
+
     public static String join(String delimiter, int[] array) {
         Require.nonNull(delimiter, "delimiter");
         Require.nonNull(array, "array");
