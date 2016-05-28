@@ -17,6 +17,9 @@ import java.util.*;
  * coordinates of the corresponding cell. On the other hand, the coordinate of the relevant side needs to be
  * incremented by one if a wall on the positive side is to be checked. The toIndices method performs the
  * conversion from global coordinates to internal array coordinates.
+ *
+ * Some of the sides of some of the cells on the positive edges of the array are outside the rectangular bounding
+ * box of the maze. These walls are non-writable, and setWall will throw an exception if you try to write to them.
  */
 public class ArrayMaze implements Maze {
 
@@ -102,6 +105,21 @@ public class ArrayMaze implements Maze {
         return true;
     }
 
+    private boolean isWritable(int[] indices, Direction side) {
+        boolean onEdge = false;
+        for (int d=0; d<getDimensionCount(); d++) {
+            if (indices[d] == cells.getShape()[d] - 1) {
+                if (!onEdge) {
+                    onEdge = true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private int[] toIndices(MazeCoordinate coordinate, Direction side) {
         Require.nonNull(coordinate, "coordinate");
         Require.nDimensional(side, getDimensionCount(), "side");
@@ -117,6 +135,10 @@ public class ArrayMaze implements Maze {
         return indices;
     }
 
+    public boolean isWritable(MazeCoordinate coordinate, Direction side) {
+        return isWritable(toIndices(coordinate, side), side);
+    }
+
     public boolean hasWall(MazeCoordinate coordinate, Direction side) {
         try {
             return cells.get(toIndices(coordinate, side)).hasWall(side.getDimension());
@@ -127,7 +149,11 @@ public class ArrayMaze implements Maze {
     }
 
     protected void setWall(MazeCoordinate coordinate, Direction side, boolean isWall) {
-        cells.get(toIndices(coordinate, side)).setWall(side.getDimension(), isWall);
+        int[] indices = toIndices(coordinate, side);
+        if (!isWritable(indices, side)) {
+            throw new IndexOutOfBoundsException("face is not writable");
+        }
+        cells.get(indices).setWall(side.getDimension(), isWall);
     }
 
     protected void addWall(MazeCoordinate coordinate, Direction side) {
