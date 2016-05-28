@@ -18,24 +18,41 @@ public class Direction {
     public static final Direction DOWN = new Direction(2, Sign.NEGATIVE);
     public static final Direction UP = new Direction(2, Sign.POSITIVE);
 
+    private static final int highestPrecomputedDimensions = 4;
+    private static final Direction[][] allDirections = new Direction[highestPrecomputedDimensions +1][];
+    static {
+        for (int d = 1; d<=highestPrecomputedDimensions; d++) {
+            allDirections[d] = computeAllDirections(d);
+        }
+    }
+
     private final int dimension;
     private final Sign sign;
 
     public Direction(int dimension, Sign sign) {
-        Require.nonNull(sign, "sign");
         Require.nonNegative(dimension, "dimension");
+        Require.nonNull(sign, "sign");
         this.dimension = dimension;
         this.sign = sign;
     }
 
-    public static final Direction[] getAllDirections(int dimensions) {
-        Require.positive(dimensions, "dimensions");
+    private static final Direction[] computeAllDirections(int dimensions) {
         Direction[] directions = new Direction[dimensions * 2];
         for (int dimension=0; dimension<dimensions; dimension++) {
             directions[dimension * 2] = new Direction(dimension, Sign.NEGATIVE);
             directions[dimension * 2 + 1] = new Direction(dimension, Sign.POSITIVE);
         }
         return directions;
+    }
+
+    public static final Direction[] getAllDirections(int dimensions) {
+        Require.positive(dimensions, "dimensions");
+        if (dimensions < highestPrecomputedDimensions) {
+            return allDirections[dimensions];
+        }
+        else {
+            return computeAllDirections(dimensions);
+        }
     }
 
     public int getDimension() {
