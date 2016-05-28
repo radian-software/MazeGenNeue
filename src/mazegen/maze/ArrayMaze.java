@@ -35,7 +35,31 @@ public class ArrayMaze implements Maze {
             internalShape[i] = shape[i] + 1;
         }
         if (hasWalls) {
-            cells = new MultiDimensionalArray<>(internalShape, () -> new MazeCell(shape.length, true));
+            cells = new MultiDimensionalArray<>(internalShape, indices -> {
+                int edgeDimension = -1;
+                boolean multipleEdges = false;
+                for (int d=0; d<shape.length; d++) {
+                    if (indices[d] == internalShape[d] - 1) {
+                        if (edgeDimension == -1) {
+                            edgeDimension = d;
+                        }
+                        else {
+                            multipleEdges = true;
+                            break;
+                        }
+                    }
+                }
+                if (edgeDimension == -1) {
+                    return new MazeCell(shape.length, true);
+                }
+                else {
+                    MazeCell cell = new MazeCell(shape.length);
+                    if (!multipleEdges) {
+                        cell.addWall(edgeDimension);
+                    }
+                    return cell;
+                }
+            });
         }
         else {
             cells = new MultiDimensionalArray<>(internalShape, indices -> {
