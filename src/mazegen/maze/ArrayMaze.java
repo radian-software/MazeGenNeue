@@ -4,7 +4,13 @@ package mazegen.maze;
 import mazegen.util.MultiDimensionalArray;
 import mazegen.util.Require;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Each MazeCell contains information only about the walls on its negative sides. Therefore, the ArrayMaze
@@ -378,19 +384,19 @@ public class ArrayMaze implements Maze {
         if (getDimensionCount() == 2) return ' ';
         MazeFace bottomFace = new MazeFace(coordinate, Direction.DOWN),
                 topFace = new MazeFace(coordinate, Direction.UP);
-        boolean down = hasWall(bottomFace);
-        boolean up = hasWall(topFace);
+        boolean down = !hasWall(bottomFace);
+        boolean up = !hasWall(topFace);
         if (down) {
             if (up) {
-                return '≶';
+                return '↕';
             }
             else {
-                return '>';
+                return '↓';
             }
         }
         else {
             if (up) {
-                return '<';
+                return '↑';
             }
             else {
                 return ' ';
@@ -398,37 +404,46 @@ public class ArrayMaze implements Maze {
         }
     }
 
+    private String layerToString(BiFunction<Integer, Integer, MazeCoordinate> coordinateMaker) {
+        List<String> rows = new ArrayList<>();
+        for (int y=0; y<=shape[1]; y++) {
+            StringBuilder sb = new StringBuilder();
+            for (int x=0; x<=shape[0]; x++) {
+                MazeCoordinate coord = coordinateMaker.apply(x, y);
+                sb.append(getFrontLeftCornerChar(coord));
+                if (x < shape[0]) {
+                    sb.append(getFrontChar(coord));
+                }
+            }
+            rows.add(sb.toString());
+            if (y < shape[1]) {
+                sb = new StringBuilder();
+                for (int x = 0; x <= shape[0]; x++) {
+                    MazeCoordinate coord = coordinateMaker.apply(x, y);
+                    sb.append(getLeftChar(coord));
+                    if (x < shape[0]) {
+                        sb.append(getCenterChar(coord));
+                    }
+                }
+                rows.add(sb.toString());
+            }
+        }
+        Collections.reverse(rows);
+        return String.join("\n", rows);
+    }
+
     @Override
     public String toString() {
         switch (getDimensionCount()) {
             case 2:
-                List<String> rows = new ArrayList<>();
-                for (int y=0; y<=shape[1]; y++) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int x=0; x<=shape[0]; x++) {
-                        MazeCoordinate coord = new MazeCoordinate(x, y);
-                        sb.append(getFrontLeftCornerChar(coord));
-                        if (x < shape[0]) {
-                            sb.append(getFrontChar(coord));
-                        }
-                    }
-                    rows.add(sb.toString());
-                    if (y < shape[1]) {
-                        sb = new StringBuilder();
-                        for (int x = 0; x <= shape[0]; x++) {
-                            MazeCoordinate coord = new MazeCoordinate(x, y);
-                            sb.append(getLeftChar(coord));
-                            if (x < shape[0]) {
-                                sb.append(getCenterChar(coord));
-                            }
-                        }
-                        rows.add(sb.toString());
-                    }
-                }
-                Collections.reverse(rows);
-                return String.join("\n", rows);
+                return layerToString(MazeCoordinate::new);
             case 3:
-                // FIXME
+                List<String> layers = IntStream
+                        .range(0, shape[2])
+                        .mapToObj(z -> layerToString((x, y) -> new MazeCoordinate(x, y, z)))
+                        .collect(Collectors.toList());
+                Collections.reverse(layers);
+                return String.join("\n", layers);
             default:
                 return cells.toString();
         }
