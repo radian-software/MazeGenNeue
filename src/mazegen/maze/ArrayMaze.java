@@ -101,6 +101,18 @@ public class ArrayMaze implements Maze {
         return shape;
     }
 
+    public int getSideLength(int dimension) {
+        return shape[dimension];
+    }
+
+    public int getSize() {
+        int size = 1;
+        for (int sideLength : shape) {
+            size *= sideLength;
+        }
+        return size;
+    }
+
     public boolean containsCoordinate(MazeCoordinate coordinate) {
         Require.nDimensional(coordinate, getDimensionCount(), "coordinate");
         for (int d=0; d<coordinate.getDimensionCount(); d++) {
