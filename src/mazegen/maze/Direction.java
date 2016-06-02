@@ -75,6 +75,10 @@ public class Direction {
         return sign.toInt();
     }
 
+    public Direction invert() {
+        return new Direction(dimension, sign.invert());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
