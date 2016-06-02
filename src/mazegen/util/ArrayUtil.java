@@ -1,6 +1,8 @@
 // Copyright (c) 2016 by Radon Rosborough. All rights reserved.
 package mazegen.util;
 
+import java.util.List;
+
 public final class ArrayUtil {
 
     private ArrayUtil() {}
@@ -15,6 +17,14 @@ public final class ArrayUtil {
         }
         sb.append(array[array.length-1]);
         return sb.toString();
+    }
+
+    public static <T> T pop(List<T> list) {
+        return list.remove(list.size() - 1);
+    }
+
+    public static <T> T last(List<T> list) {
+        return list.get(list.size() - 1);
     }
 
 }
