@@ -41,7 +41,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
                 case RANDOM: return random.nextInt(size);
                 case FIRST: return 0;
                 case LAST: return size - 1;
-                case MIDDLE: return (int)(size / 2);
+                case MIDDLE: return size / 2;
                 default: throw new AssertionError();
             }
         }
