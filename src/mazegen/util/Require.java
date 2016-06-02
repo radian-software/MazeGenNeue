@@ -33,6 +33,12 @@ public final class Require {
         }
     }
 
+    public static void nonZero(long num, String name) {
+        if (num == 0) {
+            throw new IllegalArgumentException(name + " cannot be zero");
+        }
+    }
+
     public static void between(int num, int lower, int upper, String name) {
         if (num < lower || num > upper) {
             throw new IllegalArgumentException(String.format("%s must be in the range [%d, %d] (was %d)", name, lower, upper, num));

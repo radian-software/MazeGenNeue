@@ -10,7 +10,18 @@ public class ReversibleRandom {
     private final List<Long> history = new ArrayList<>();
     private int index = 0;
 
+    private static long makeNonZero(long x) {
+        return x != 0 ? x : 1;
+    }
+
+    public ReversibleRandom() {
+        while (seed == 0) {
+            seed = System.nanoTime();
+        }
+    }
+
     public ReversibleRandom(long seed) {
+        Require.nonZero(seed, "seed");
         this.seed = seed;
     }
 
