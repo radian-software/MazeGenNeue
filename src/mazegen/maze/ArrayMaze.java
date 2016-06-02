@@ -238,11 +238,11 @@ public class ArrayMaze implements Maze {
         return result;
     }
 
-    private char getFrontLeftCornerChar(MazeCoordinate coordinate) {
-        MazeFace leftFace = new MazeFace(coordinate.offset(Direction.LEFT), Direction.FRONT),
-                rightFace = new MazeFace(coordinate, Direction.FRONT),
-                frontFace = new MazeFace(coordinate.offset(Direction.FRONT), Direction.LEFT),
-                backFace = new MazeFace(coordinate, Direction.LEFT);
+    private char getFrontLeftCornerChar(MazeCoordinate cell) {
+        MazeFace leftFace = new MazeFace(cell.offset(Direction.LEFT), Direction.FRONT),
+                rightFace = new MazeFace(cell, Direction.FRONT),
+                frontFace = new MazeFace(cell.offset(Direction.FRONT), Direction.LEFT),
+                backFace = new MazeFace(cell, Direction.LEFT);
         boolean left = hasWall(leftFace);
         boolean right = hasWall(rightFace);
         boolean front = hasWall(frontFace);
@@ -415,20 +415,20 @@ public class ArrayMaze implements Maze {
         }
     }
 
-    private char getFrontChar(MazeCoordinate coordinate) {
-        MazeFace face = new MazeFace(coordinate, Direction.FRONT);
+    private char getFrontChar(MazeCoordinate cell) {
+        MazeFace face = new MazeFace(cell, Direction.FRONT);
         return hasWall(face) ? '─' : ' ';
     }
 
-    private char getLeftChar(MazeCoordinate coordinate) {
-        MazeFace face = new MazeFace(coordinate, Direction.LEFT);
+    private char getLeftChar(MazeCoordinate cell) {
+        MazeFace face = new MazeFace(cell, Direction.LEFT);
         return hasWall(face) ? '│' : ' ';
     }
 
-    private char getCenterChar(MazeCoordinate coordinate) {
+    private char getCenterChar(MazeCoordinate cell) {
         if (getDimensionCount() == 2) return ' ';
-        MazeFace bottomFace = new MazeFace(coordinate, Direction.DOWN),
-                topFace = new MazeFace(coordinate, Direction.UP);
+        MazeFace bottomFace = new MazeFace(cell, Direction.DOWN),
+                topFace = new MazeFace(cell, Direction.UP);
         boolean down = !hasWall(bottomFace);
         boolean up = !hasWall(topFace);
         if (down) {
