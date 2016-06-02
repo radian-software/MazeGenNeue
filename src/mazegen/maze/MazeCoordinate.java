@@ -21,6 +21,10 @@ public class MazeCoordinate {
         this.coordinates = coordinates;
     }
 
+    public static MazeCoordinate getOrigin(int dimensionCount) {
+        return new MazeCoordinate(new int[dimensionCount]);
+    }
+
     public int getDimensionCount() {
         return coordinates.length;
     }
@@ -41,6 +45,15 @@ public class MazeCoordinate {
             newCoordinates[dir.getDimension()] += dir.getSignInt();
         }
         return new MazeCoordinate(newCoordinates);
+    }
+
+    public MazeCoordinate[] getNeighbors() {
+        Direction[] directions = Direction.getAllDirections(coordinates.length);
+        MazeCoordinate[] neighbors = new MazeCoordinate[directions.length];
+        for (int i=0; i<directions.length; i++) {
+            neighbors[i] = offset(directions[i]);
+        }
+        return neighbors;
     }
 
     @Override
