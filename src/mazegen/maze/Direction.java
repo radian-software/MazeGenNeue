@@ -36,6 +36,15 @@ public class Direction {
         this.sign = sign;
     }
 
+    /**
+     * This method is the inverse of toInt.
+     */
+    public Direction(int identifier) {
+        Require.nonNegative(identifier, "identifier");
+        this.dimension = identifier / 2;
+        this.sign = identifier % 2 == 0 ? Sign.NEGATIVE : Sign.POSITIVE;
+    }
+
     private static final Direction[] computeAllDirections(int dimensions) {
         Direction[] directions = new Direction[dimensions * 2];
         for (int dimension=0; dimension<dimensions; dimension++) {
@@ -77,6 +86,10 @@ public class Direction {
 
     public Direction invert() {
         return new Direction(dimension, sign.invert());
+    }
+
+    public int toInt() {
+        return dimension * 2 + (sign.isPositive() ? 1 : 0);
     }
 
     @Override
