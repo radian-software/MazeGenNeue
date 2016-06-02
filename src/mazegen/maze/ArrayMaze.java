@@ -113,9 +113,9 @@ public class ArrayMaze implements Maze {
         return size;
     }
 
-    public boolean containsCoordinate(MazeCoordinate coordinate) {
-        Require.nDimensional(coordinate, getDimensionCount(), "coordinate");
-        for (int d=0; d<coordinate.getDimensionCount(); d++) {
+    public boolean containsCoordinate(MazeCoordinate cell) {
+        Require.nDimensional(cell, getDimensionCount(), "cell");
+        for (int d=0; d<cell.getDimensionCount(); d++) {
             if (d < 0 || d > shape[d]) {
                 return false;
             }
