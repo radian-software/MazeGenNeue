@@ -19,5 +19,6 @@ public interface GeneratingMaze extends Maze {
         }
     }
     public void resetGeneration();
+    public String getState();
 
 }

@@ -334,8 +334,15 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
         }
     }
 
-    public State getState() {
-        return state;
+    @Override
+    public String getState() {
+        switch (state) {
+            case PLACE_ROOT: return "placing root";
+            case GROW_TREE: return "growing tree";
+            case PLACE_ENTRANCE_AND_EXIT: return "placing entrance and exit";
+            case FINISHED: return "finished";
+            default: throw new AssertionError();
+        }
     }
 
 }
