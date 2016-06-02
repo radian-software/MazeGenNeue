@@ -3,6 +3,7 @@ package mazegen.maze;
 
 import mazegen.util.MultiDimensionalArray;
 import mazegen.util.Require;
+import mazegen.util.Sign;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -155,6 +156,35 @@ public class ArrayMaze implements Maze {
 
     public boolean isWritable(MazeFace face) {
         return isWritable(toIndices(face.getCoordinate(), face.getSide()), face.getSide());
+    }
+
+    public boolean isEdgeCell(MazeCoordinate cell) {
+        if (!containsCoordinate(cell)) {
+            return false;
+        }
+        for (int d=0; d<getDimensionCount(); d++) {
+            int coord = cell.getCoordinate(d);
+            if (coord == 0 || coord == getSideLength(d) - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public MazeFace getExternalFace(MazeCoordinate edgeCell) {
+        if (!containsCoordinate(edgeCell)) {
+            throw new IllegalArgumentException("cell must be contained in the maze");
+        }
+        int[] coordinates = edgeCell.getCoordinates();
+        for (int d=0; d<getDimensionCount(); d++) {
+            if (coordinates[d] == 0) {
+                return new MazeFace(edgeCell, new Direction(d, Sign.NEGATIVE));
+            }
+            if (coordinates[d] == getSideLength(d) - 1) {
+                return new MazeFace(edgeCell, new Direction(d, Sign.POSITIVE));
+            }
+        }
+        throw new IllegalArgumentException("cell must be on one or more edges");
     }
 
     public boolean hasWall(MazeFace face) {
