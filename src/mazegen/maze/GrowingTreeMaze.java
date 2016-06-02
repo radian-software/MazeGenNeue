@@ -22,11 +22,11 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
         RANDOM, FIRST, LAST, MIDDLE;
     }
 
-    private interface Selector {
+    public interface Selector {
         public int select(int size, ReversibleRandom random);
     }
 
-    private static class SingleSelector implements Selector {
+    public static class SingleSelector implements Selector {
 
         private final SelectionAlgorithm selector;
 
@@ -48,7 +48,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
 
     }
 
-    private static class DoubleSelector implements Selector {
+    public static class DoubleSelector implements Selector {
 
         private final SingleSelector primarySelector, secondarySelector;
         private final double primaryChance;
@@ -74,7 +74,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
 
     }
 
-    private static class MultiSelector implements Selector {
+    public static class MultiSelector implements Selector {
 
         private final SingleSelector[] selectors;
         private final double[] weights;
