@@ -113,7 +113,33 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
 
     }
 
-    private static final Selector DEFAULT_SELECTOR = new DoubleSelector(SelectionAlgorithm.LAST, SelectionAlgorithm.RANDOM, 0.5);
+    public static class RecursiveBacktracker extends SingleSelector {
+
+        public RecursiveBacktracker() {
+            super(SelectionAlgorithm.LAST);
+        }
+
+    }
+
+    public static class PrimAlgorithm extends SingleSelector {
+
+        public PrimAlgorithm() {
+            super(SelectionAlgorithm.LAST);
+        }
+
+    }
+
+    public static class DefaultAlgorithm extends DoubleSelector {
+
+        public DefaultAlgorithm() {
+            this(0.5);
+        }
+
+        public DefaultAlgorithm(double primChance) {
+            super(SelectionAlgorithm.RANDOM, SelectionAlgorithm.LAST, primChance);
+        }
+
+    }
 
     private final ReversibleRandom random;
     private final MazeCoordinate root;
@@ -132,7 +158,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
     private int remainingCells;
 
     public GrowingTreeMaze(int[] shape) {
-        this(shape, DEFAULT_SELECTOR);
+        this(shape, new DefaultAlgorithm());
     }
 
     public GrowingTreeMaze(int[] shape, Selector selector) {
@@ -140,7 +166,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
     }
 
     public GrowingTreeMaze(int[] shape, long seed) {
-        this(shape, DEFAULT_SELECTOR, seed);
+        this(shape, new DefaultAlgorithm(), seed);
     }
 
     public GrowingTreeMaze(int[] shape, Selector selector, long seed) {
