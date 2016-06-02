@@ -132,8 +132,7 @@ public final class MultiDimensionalArray<T> {
 
         MultiDimensionalArray<?> that = (MultiDimensionalArray<?>) o;
 
-        if (!Arrays.equals(shape, that.shape)) return false;
-        return Arrays.deepEquals(data, that.data);
+        return Arrays.equals(shape, that.shape) && Arrays.deepEquals(data, that.data);
 
     }
 
