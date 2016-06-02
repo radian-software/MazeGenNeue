@@ -23,7 +23,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
     }
 
     public interface Selector {
-        public int select(int size, ReversibleRandom random);
+        int select(int size, ReversibleRandom random);
     }
 
     public static class SingleSelector implements Selector {
