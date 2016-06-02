@@ -94,10 +94,12 @@ public class ArrayMaze implements Maze {
         }
     }
 
+    @Override
     public int getDimensionCount() {
         return shape.length;
     }
 
+    @Override
     public int[] getShape() {
         return shape;
     }
@@ -187,6 +189,7 @@ public class ArrayMaze implements Maze {
         throw new IllegalArgumentException("cell must be on one or more edges");
     }
 
+    @Override
     public boolean hasWall(MazeFace face) {
         MazeCoordinate coordinate = face.getCoordinate();
         Direction side = face.getSide();
