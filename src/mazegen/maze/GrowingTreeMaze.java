@@ -337,8 +337,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
                         remainingCells += 1;
                     }
                     else {
-                        int size = visitedCells.size() + 1;
-                        int cellIndex = selector.select(visitedCells.size(), random);
+                        int cellIndex = selector.select(visitedCells.size() + 1, random);
                         visitedCells.add(cellIndex, completedCells.remove());
                     }
                     state = State.GROW_TREE;
