@@ -165,6 +165,9 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
 
     public GrowingTreeMaze(int[] shape, Selector selector, long seed) {
         super(shape, true);
+        if (getSize() == 1) {
+            throw new IllegalArgumentException("maze must have more than one cell");
+        }
         Require.nonNull(selector, "selector");
         random = new ReversibleRandom(seed);
         int[] indices = new int[shape.length];
