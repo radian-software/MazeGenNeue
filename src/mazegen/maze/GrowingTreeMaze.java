@@ -1,13 +1,7 @@
 // Copyright (c) 2016 by Radon Rosborough. All rights reserved.
 package mazegen.maze;
 
-import mazegen.util.ArrayUtil;
-import mazegen.util.MultiDimensionalArray;
-import mazegen.util.Require;
-import mazegen.util.ReversibleRandom;
-
-import java.util.ArrayList;
-import java.util.List;
+import mazegen.util.*;
 
 /**
  * See http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm
@@ -146,13 +140,13 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
     private MazeCoordinate entrance, exit;
     private final Selector selector;
     // Contains only cells that have been visited but not completed
-    private final List<MazeCoordinate> visitedCells;
+    private final MyList<MazeCoordinate> visitedCells;
     // Contains true entries for cells that have been visited
     private final MultiDimensionalArray<Boolean> visitedCellMatrix;
     // Contains only cells that have been completed
-    private final List<MazeCoordinate> completedCells;
+    private final MyList<MazeCoordinate> completedCells;
     // The directions in which walls were dug, or null if no wall was dug
-    private final List<Direction> pathDirections;
+    private final MyList<Direction> pathDirections;
     private State state;
     // Counts cells that have not been visited OR completed
     private int remainingCells;
@@ -179,10 +173,10 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
         }
         root = new MazeCoordinate(indices);
         this.selector = selector;
-        visitedCells = new ArrayList<>();
+        visitedCells = new MyArrayList<>();
         visitedCellMatrix = new MultiDimensionalArray<>(shape, false);
-        completedCells = new ArrayList<>();
-        pathDirections = new ArrayList<>();
+        completedCells = new MyArrayList<>();
+        pathDirections = new MyArrayList<>();
         state = State.PLACE_ROOT;
         remainingCells = getSize();
     }
@@ -194,11 +188,11 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
 
     private MazeCoordinate getMostDistantEdgeCell(MazeCoordinate fromCell) {
         // cells we need to visit
-        List<MazeCoordinate> cells = new ArrayList<>();
+        MyList<MazeCoordinate> cells = new MyArrayList<>();
         // the directions we're visiting those cells from (to avoid backtracking)
-        List<Direction> fromDirections = new ArrayList<>();
+        MyList<Direction> fromDirections = new MyArrayList<>();
         // the distances of those cells from the starting cell
-        List<Integer> distances = new ArrayList<>();
+        MyList<Integer> distances = new MyArrayList<>();
         cells.add(fromCell);
         fromDirections.add(null);
         distances.add(0);
@@ -206,9 +200,9 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
         MazeCoordinate toCell = null;
         int greatestDistance = 0;
         while (!cells.isEmpty()) {
-            MazeCoordinate cell = ArrayUtil.pop(cells);
-            Direction fromDirection = ArrayUtil.pop(fromDirections);
-            int distance = ArrayUtil.pop(distances);
+            MazeCoordinate cell = cells.remove();
+            Direction fromDirection = fromDirections.remove();
+            int distance = distances.remove();
             // found an edge cell farther from the starting cell than the last one
             if (distance > greatestDistance && isEdgeCell(cell)) {
                 toCell = cell;
@@ -257,8 +251,8 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
                 int cellIndex = selector.select(visitedCells.size(), random);
                 MazeCoordinate cell = visitedCells.get(cellIndex);
                 // find unvisited neighbors of that cell
-                List<MazeCoordinate> neighbors = new ArrayList<>();
-                List<Direction> directions = new ArrayList<>();
+                MyList<MazeCoordinate> neighbors = new MyArrayList<>();
+                MyList<Direction> directions = new MyArrayList<>();
                 for (Direction direction : Direction.getAllDirections(getDimensionCount())) {
                     MazeCoordinate neighbor = cell.offset(direction);
                     try {
@@ -331,10 +325,10 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
             case PLACE_ENTRANCE_AND_EXIT:
             case GROW_TREE:
                 if (!pathDirections.isEmpty()) {
-                    Direction direction = ArrayUtil.pop(pathDirections);
+                    Direction direction = pathDirections.remove();
                     boolean hasNeighbors = direction != null;
                     if (hasNeighbors) {
-                        MazeCoordinate neighbor = ArrayUtil.pop(visitedCells);
+                        MazeCoordinate neighbor = visitedCells.remove();
                         addWall(new MazeFace(neighbor, direction.invert()));
                         visitedCellMatrix.set(neighbor.getCoordinates(), false);
                         remainingCells += 1;
@@ -342,7 +336,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
                     else {
                         int size = visitedCells.size() + 1;
                         int cellIndex = selector.select(visitedCells.size(), random);
-                        visitedCells.add(cellIndex, ArrayUtil.pop(completedCells));
+                        visitedCells.add(cellIndex, completedCells.remove());
                     }
                     state = State.GROW_TREE;
                 }

@@ -21,14 +21,6 @@ public final class ArrayUtil {
         return sb.toString();
     }
 
-    public static <T> T pop(List<T> list) {
-        return list.remove(list.size() - 1);
-    }
-
-    public static <T> T last(List<T> list) {
-        return list.get(list.size() - 1);
-    }
-
     public static String horizontalJoin(String delimiter, List<String> strings) {
         return strings
                 .stream()
