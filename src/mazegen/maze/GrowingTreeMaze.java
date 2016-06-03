@@ -6,7 +6,7 @@ import mazegen.util.*;
 /**
  * See http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm
  */
-public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMaze {
+public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSolutionMaze {
 
     public enum State {
         PLACE_ROOT, GROW_TREE, PLACE_ENTRANCE_AND_EXIT, FINISHED;
@@ -150,6 +150,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
     private State state;
     // Counts cells that have not been visited OR completed
     private int remainingCells;
+    private MyList<MazeCoordinate> solution;
 
     public GrowingTreeMaze(int[] shape) {
         this(shape, new DefaultAlgorithm());
@@ -364,6 +365,98 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingMa
             case PLACE_ENTRANCE_AND_EXIT: return "placing entrance and exit";
             case FINISHED: return "finished";
             default: throw new AssertionError();
+        }
+    }
+
+    @Override
+    public void showSolution() {
+        if (state == State.FINISHED) {
+            Direction[] directions = Direction.getAllDirections(getDimensionCount());
+            solution = new MyArrayList<>();
+            MyList<Integer> fromIndices = new MyArrayList<>();
+            MyList<Integer> toIndices = new MyArrayList<>();
+            Direction entranceNormalDirection = getExternalFace(entrance).getSide();
+            solution.add(entrance.offset(entranceNormalDirection));
+            fromIndices.add(entranceNormalDirection.toInt());
+            toIndices.add(entranceNormalDirection.invert().toInt());
+            MazeCoordinate goal = exit.offset(getExternalFace(exit).getSide());
+            while (true) {
+                MazeCoordinate cell = solution.get();
+                if (cell.equals(goal)) {
+                    return;
+                }
+                int toIndex = toIndices.get();
+                int fromIndex = fromIndices.get();
+                while (toIndex < directions.length
+                        && (toIndex == fromIndex || hasWall(new MazeFace(cell, directions[toIndex])))) {
+                    toIndex += 1;
+                }
+                if (toIndex < directions.length) {
+                    toIndices.set(toIndex + 1);
+                    solution.add(cell.offset(directions[toIndex]));
+                    fromIndices.add(directions[toIndex].invert().toInt());
+                    toIndices.add(0);
+                }
+                else {
+                    solution.remove();
+                    fromIndices.remove();
+                    toIndices.remove();
+                }
+            }
+        }
+        else {
+            throw new IllegalStateException("cannot show solution for unfinished maze");
+        }
+    }
+
+    @Override
+    public void hideSolution() {
+        solution = null;
+    }
+
+    @Override
+    protected char getFrontChar(MazeCoordinate cell) {
+        char c = super.getFrontChar(cell);
+        if (c == ' ' && solution != null) {
+            int index = solution.indexOf(cell);
+            if (index != -1) {
+                MazeCoordinate neighbor = cell.offset(Direction.FRONT);
+                try {
+                    if (solution.get(index - 1).equals(neighbor) || solution.get(index + 1).equals(neighbor)) {
+                        return '.';
+                    }
+                } catch (IndexOutOfBoundsException e) {}
+            }
+        }
+        return c;
+    }
+
+    @Override
+    protected char getLeftChar(MazeCoordinate cell) {
+        char c = super.getLeftChar(cell);
+        if (c == ' ' && solution != null) {
+            int index = solution.indexOf(cell);
+            if (index != -1) {
+                MazeCoordinate neighbor = cell.offset(Direction.LEFT);
+                try {
+                    if (solution.get(index - 1).equals(neighbor) || solution.get(index + 1).equals(neighbor)) {
+                        return '.';
+                    }
+                }
+                catch (IndexOutOfBoundsException e) {}
+            }
+        }
+        return c;
+    }
+
+    @Override
+    protected char getCenterChar(MazeCoordinate cell) {
+        char c = super.getCenterChar(cell);
+        if (c != ' ' || solution == null) {
+            return c;
+        }
+        else {
+            return solution.contains(cell) ? '.' : ' ';
         }
     }
 

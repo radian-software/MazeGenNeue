@@ -415,17 +415,17 @@ public class ArrayMaze implements Maze {
         }
     }
 
-    private char getFrontChar(MazeCoordinate cell) {
+    protected char getFrontChar(MazeCoordinate cell) {
         MazeFace face = new MazeFace(cell, Direction.FRONT);
         return hasWall(face) ? '─' : ' ';
     }
 
-    private char getLeftChar(MazeCoordinate cell) {
+    protected char getLeftChar(MazeCoordinate cell) {
         MazeFace face = new MazeFace(cell, Direction.LEFT);
         return hasWall(face) ? '│' : ' ';
     }
 
-    private char getCenterChar(MazeCoordinate cell) {
+    protected char getCenterChar(MazeCoordinate cell) {
         if (getDimensionCount() == 2) return ' ';
         MazeFace bottomFace = new MazeFace(cell, Direction.DOWN),
                 topFace = new MazeFace(cell, Direction.UP);
