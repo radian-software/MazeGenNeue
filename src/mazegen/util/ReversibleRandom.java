@@ -123,4 +123,32 @@ public class ReversibleRandom {
         return list.get(nextInt(list.size()));
     }
 
+    // overrides from Object
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReversibleRandom that = (ReversibleRandom) o;
+
+        if (seed != that.seed) return false;
+        if (index != that.index) return false;
+        return history.equals(that.history);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (seed ^ (seed >>> 32));
+        result = 31 * result + history.hashCode();
+        result = 31 * result + index;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ReversibleRandom(seed = %dL, history = %s, index = %d)", seed, history, index);
+    }
+
 }
