@@ -240,9 +240,6 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
 
     @Override
     public void advanceGeneration() {
-        if (state != State.FINISHED) {
-            random.advanceGenerator();
-        }
         switch (state) {
             case PLACE_ROOT:
                 visitedCells.add(root);
@@ -251,6 +248,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
                 state = State.GROW_TREE;
                 break;
             case GROW_TREE:
+                random.advanceGenerator();
                 // pick a random visited cell
                 int cellIndex = selector.select(visitedCells.size(), random);
                 MazeCoordinate cell = visitedCells.get(cellIndex);
@@ -306,7 +304,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
 
     @Override
     public void resetGeneration() {
-        random.resetGenerator();
+        random.resetGenerator(0);
         unsetEntranceAndExit();
         visitedCells.clear();
         visitedCellMatrix.fill(false);
@@ -316,9 +314,6 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
 
     @Override
     public void reverseGeneration() {
-        if (state != State.PLACE_ROOT) {
-            random.reverseGenerator();
-        }
         switch (state) {
             case FINISHED:
                 addWall(getExternalFace(entrance));
@@ -329,6 +324,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
             case PLACE_ENTRANCE_AND_EXIT:
             case GROW_TREE:
                 if (!pathDirections.isEmpty()) {
+                    random.resetGenerator();
                     Direction direction = pathDirections.remove();
                     boolean hasNeighbors = direction != null;
                     if (hasNeighbors) {
@@ -341,6 +337,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
                         int cellIndex = selector.select(visitedCells.size() + 1, random);
                         visitedCells.add(cellIndex, completedCells.remove());
                     }
+                    random.reverseGenerator();
                     state = State.GROW_TREE;
                 }
                 else {

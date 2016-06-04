@@ -18,21 +18,59 @@ public class ReversibleRandom {
         while (seed == 0) {
             seed = System.nanoTime();
         }
+        history.add(seed);
     }
 
     public ReversibleRandom(long seed) {
         Require.nonZero(seed, "seed");
         this.seed = seed;
+        history.add(seed);
+    }
+
+    public long getSeed() {
+        return getSeed(0);
+    }
+
+    public long getSeed(int index) {
+        return history.get(index);
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public boolean inInitialState() {
+        return index == 0;
+    }
+
+    public boolean inLatestState() {
+        return index == history.size() - 1;
     }
 
     public void advanceGenerator() {
-        if (index < history.size()) {
-            seed = history.get(index);
-        }
-        else {
+        index += 1;
+        if (index >= history.size()) {
             history.add(seed);
         }
-        index += 1;
+        else {
+            seed = history.get(index);
+        }
+    }
+
+    public void resetGenerator() {
+        seed = history.get(index);
+    }
+
+    public void resetGenerator(int index) {
+        Require.between(index, 0, history.size() - 1, "index");
+        this.index = index;
+        seed = history.get(index);
+    }
+
+    public void reverseGenerator() {
+        if (inInitialState()) throw new IllegalStateException("cannot reverse from initial state");
+        index -= 1;
+        seed = history.get(index);
     }
 
     public long nextLong() {
@@ -56,7 +94,6 @@ public class ReversibleRandom {
     }
 
     public int nextInt(int n) {
-        advanceGenerator();
         int bits, val;
         do {
             bits = (nextInt() << 1) >>> 1;
@@ -84,23 +121,6 @@ public class ReversibleRandom {
 
     public <T> T choose(List<T> list) {
         return list.get(nextInt(list.size()));
-    }
-
-    public long getInitialSeed() {
-        return history.isEmpty() ? seed : history.get(0);
-    }
-
-    public boolean inInitialState() {
-        return index == 0;
-    }
-
-    public void reverseGenerator() {
-        if (inInitialState()) throw new IllegalStateException("cannot reverse from initial state");
-        index -= 1;
-    }
-
-    public void resetGenerator() {
-        index = 0;
     }
 
 }
