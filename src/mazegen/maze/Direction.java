@@ -5,7 +5,7 @@ import mazegen.util.Require;
 import mazegen.util.Sign;
 
 /**
- * See MazeCoordinate.
+ * See Maze for information on the coordinate system used here.
  */
 public class Direction {
 
@@ -18,6 +18,10 @@ public class Direction {
     public static final Direction DOWN = new Direction(2, Sign.NEGATIVE);
     public static final Direction UP = new Direction(2, Sign.POSITIVE);
 
+    /**
+     * Results of the getAllDirections method for low dimensions are cached because
+     * this method is often called for the same number of dimensions repeatedly.
+     */
     private static final int highestPrecomputedDimensions = 4;
     private static final Direction[][] allDirections = new Direction[highestPrecomputedDimensions +1][];
     static {
@@ -37,7 +41,7 @@ public class Direction {
     }
 
     /**
-     * This method is the inverse of toInt.
+     * This constructor is the inverse of toInt.
      */
     public Direction(int identifier) {
         Require.nonNegative(identifier, "identifier");
@@ -88,6 +92,9 @@ public class Direction {
         return new Direction(dimension, sign.invert());
     }
 
+    /**
+     * This is equivalent to Arrays.asList(getAllDirections(getDimension() + 1)).indexOf(this).
+     */
     public int toInt() {
         return dimension * 2 + (sign.isPositive() ? 1 : 0);
     }

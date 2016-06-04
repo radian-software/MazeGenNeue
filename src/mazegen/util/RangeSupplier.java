@@ -3,6 +3,9 @@ package mazegen.util;
 
 import java.util.function.Supplier;
 
+/**
+ * Non-pure Supplier that provides an arithmetic sequence of integers.
+ */
 public class RangeSupplier implements Supplier<Integer> {
 
     private int current;

@@ -25,6 +25,8 @@ public final class MultiDimensionalArray<T> {
             size *= sideLength;
         }
         this.shape = shape;
+        // due to type erasure, you can't instantiate an array of a generic type in Java
+        // the resulting awkward construction generates a spurious "unchecked cast" warning
         data = (T[]) new Object[size];
     }
 
@@ -55,6 +57,10 @@ public final class MultiDimensionalArray<T> {
         return true;
     }
 
+    /**
+     * Converts from a set of indices (one for each dimension) to a single index locating
+     * the referenced item in the data array.
+     */
     private int toIndex(int[] indices) {
         if (!isValid(indices)) {
             throw new IndexOutOfBoundsException(Arrays.toString(indices));

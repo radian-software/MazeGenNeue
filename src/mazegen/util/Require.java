@@ -6,6 +6,12 @@ import mazegen.maze.MazeCoordinate;
 
 import java.util.Objects;
 
+/**
+ * This class contains some useful methods that can be used to make argument validation
+ * more concise and readable. Due to the way Java handles method signatures and primitive
+ * types, a different overload is needed for every possible variation of types. This would
+ * be silly, so instead overloads are added here as appropriate, when new ones are needed.
+ */
 public final class Require {
 
     private Require() {}

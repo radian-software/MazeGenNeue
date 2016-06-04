@@ -3,6 +3,9 @@ package mazegen.util;
 
 import java.util.Collection;
 
+/**
+ * See MyList for more information on this class.
+ */
 public class MyArrayList<E> extends java.util.ArrayList<E> implements MyList<E> {
 
     public MyArrayList() {

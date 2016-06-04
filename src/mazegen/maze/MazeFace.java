@@ -1,6 +1,11 @@
 // Copyright (c) 2016 by Radon Rosborough. All rights reserved.
 package mazegen.maze;
 
+/**
+ * This class is a simple package of a MazeCoordinate and Direction that represents
+ * one face of a Maze cell, so that the two can be returned as a single object from
+ * method calls (for instance, ArrayMaze.getExternalFace).
+ */
 public class MazeFace {
 
     private final MazeCoordinate coordinate;

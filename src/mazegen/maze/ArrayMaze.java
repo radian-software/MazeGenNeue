@@ -14,10 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Each MazeCell contains information only about the walls on its negative sides. Therefore, the ArrayMaze
+ * See Maze for information about the coordinate system used, and see MazeCell for information about the
+ * storage of wall locations.
+ *
+ * Since each MazeCell contains information only about the walls on its negative sides, the ArrayMaze
  * needs a MultiDimensionalArray of MazeCells whose side lengths are one greater than the dimensions of
- * the maze. The MazeCells on the positive sides of the array are used to hold information about the walls
- * on the far positive sides of the maze.
+ * the maze. The MazeCells on the far positive sides of the array are used to hold information about the
+ * walls on the far positive sides of the maze.
  *
  * The placement of the extra MazeCells at the end of the MultiDimensionalArray instead of the beginning
  * ensures that the coordinates of the MazeCell required to check a wall on the negative side are the same as the
@@ -46,6 +49,12 @@ public class ArrayMaze implements Maze {
         }
         if (hasWalls) {
             cells = new MultiDimensionalArray<>(internalShape, indices -> {
+                // Internal cells will have all of their negative-facing walls present. External cells
+                // (the ones on the far positive edges of the cell matrix) are more interesting:
+                // Depending on their position, they may have either zero or one negative-facing walls
+                // present. In particular, if the cell is on *multiple* far positive edges of the matrix,
+                // then it has no negative-facing walls; whereas, if the cell is on exactly *one* far
+                // positive edge of the matrix, then it has a negative-facing wall parallel to that edge.
                 int edgeDimension = -1;
                 boolean multipleEdges = false;
                 for (int d=0; d<shape.length; d++) {
@@ -75,8 +84,12 @@ public class ArrayMaze implements Maze {
             cells = new MultiDimensionalArray<>(internalShape, indices -> {
                 MazeCell cell = new MazeCell(shape.length);
                 for (int dimension = 0; dimension < shape.length; dimension++) {
+                    // we add a wall to the cells on the far negative and far positive edges of the
+                    // matrix
                     if (indices[dimension] == 0 || indices[dimension] == internalShape[dimension] - 1) {
                         boolean addWall = true;
+                        // however, we don't add a wall if the cell is on one far negative edge and
+                        // one far positive edge, or if the cell is on two far positive edges
                         for (int otherDimension = 0; otherDimension < shape.length; otherDimension++) {
                             if (otherDimension != dimension
                                     && indices[otherDimension] == internalShape[otherDimension] - 1) {
@@ -173,6 +186,10 @@ public class ArrayMaze implements Maze {
         return false;
     }
 
+    /**
+     * Gets the face of the given cell that is exposed to the outside. Since the cell is
+     * required to be an edge cell, such a face will always exist.
+     */
     public MazeFace getExternalFace(MazeCoordinate edgeCell) {
         if (!containsCoordinate(edgeCell)) {
             throw new IllegalArgumentException("cell must be contained in the maze");
@@ -477,6 +494,15 @@ public class ArrayMaze implements Maze {
         return String.join("\n", rows);
     }
 
+    /**
+     * The reversing of layers and rows makes it so that the output of toString conforms to
+     * the conventions specified in the Maze interface. Reversing the rows within each layer
+     * makes it so that y-coordinates increase in the upwards direction (we assume we are
+     * looking from above, so this really means they increase towards the back), while
+     * reversing the layers makes it so that z-coordinates increase in the upwards direction
+     * (this time, upwards represents the actual upwards direction -- the ambiguity arises
+     * from projecting a three-dimensional Maze into two dimensions).
+     */
     @Override
     public String toString() {
         switch (getDimensionCount()) {

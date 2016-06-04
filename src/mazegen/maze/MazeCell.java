@@ -9,11 +9,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A MazeCell represents a single square or (hyper)cube of a Maze. Any given cube would be bordered
- * by six walls, but keeping track of each wall is redundant by a factor of two: neighboring cubes
- * contain the same information about the wall they share. Therefore, each MazeCell only stores
- * information about the walls in its negative directions. The asymmetry created by this design
- * choice is hidden behind the Maze abstraction in ArrayMaze.
+ * A MazeCell represents a single cell (square, cube, or hypercube) of a Maze. Each cell has
+ * (2 * dimensionCount) faces, and there is either a wall or no wall for each of these faces.
+ * However, a MazeCell only stores information about the faces on its negative sides, to
+ * avoid redundancy. Indeed, every face has two "sides"; that is, it is bordered by two cells.
+ * If every MazeCell were to keep track of each of its faces, the information about whether
+ * any given face has a wall would be duplicated between two MazeCells. The asymmetry created
+ * by this design choice is hidden behind the Maze abstraction in ArrayMaze. That is, the
+ * ArrayMaze.hasWall method accepts any face for a given cell, then decides which MazeCell
+ * to which to delegate the call based on whether the face is on a positive or negative
+ * side of a cell.
  */
 final class MazeCell {
 

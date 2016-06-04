@@ -6,11 +6,8 @@ import mazegen.util.Require;
 
 import java.util.Arrays;
 
-/*
- * These coordinates are zero-based and refer to the distinct squares or (hyper)cubes comprising a Maze.
- * In a three-dimensional context, the 0-axis runs from left to right, the 1-axis runs from front to back,
- * and the 2-axis runs from bottom to top. In a two-dimensional context, we imagine the maze as being viewed
- * from above, so that the 0-axis runs from left to right and the 1-axis runs from bottom to top.
+/**
+ * See Maze for information about the coordinate system used in this class.
  */
 public class MazeCoordinate {
 

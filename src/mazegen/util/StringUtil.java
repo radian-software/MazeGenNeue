@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Some basic utility methods for combining strings
+ */
 public final class StringUtil {
 
     private StringUtil() {}
