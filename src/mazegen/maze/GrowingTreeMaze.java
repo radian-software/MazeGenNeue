@@ -244,7 +244,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
         }
 
         public DefaultAlgorithm(double primChance) {
-            super(SelectionAlgorithm.RANDOM, SelectionAlgorithm.LAST, primChance);
+            super(SelectionAlgorithm.LAST, SelectionAlgorithm.RANDOM, 1 - primChance);
         }
 
     }
