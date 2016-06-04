@@ -1,7 +1,7 @@
 // Copyright (c) 2016 by Radon Rosborough. All rights reserved.
 package mazegen.maze;
 
-import mazegen.util.ArrayUtil;
+import mazegen.util.StringUtil;
 import mazegen.util.Require;
 
 import java.util.Arrays;
@@ -74,7 +74,7 @@ public class MazeCoordinate {
 
     @Override
     public String toString() {
-        return "(" + ArrayUtil.join(", ", coordinates) + ")";
+        return "(" + StringUtil.join(", ", coordinates) + ")";
     }
 
 }

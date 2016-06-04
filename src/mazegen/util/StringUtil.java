@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class ArrayUtil {
+public final class StringUtil {
 
-    private ArrayUtil() {}
+    private StringUtil() {}
 
     public static String join(String delimiter, int[] array) {
         Require.nonNull(delimiter, "delimiter");
