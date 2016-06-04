@@ -9,6 +9,7 @@ public class ReversibleRandom {
     private long seed;
     private final List<Long> history = new ArrayList<>();
     private int index = 0;
+    private boolean onRecord = true;
 
     private static long makeNonZero(long x) {
         return x != 0 ? x : 1;
@@ -47,6 +48,10 @@ public class ReversibleRandom {
         return index == history.size() - 1;
     }
 
+    public boolean onRecord() {
+        return onRecord;
+    }
+
     public void advanceGenerator() {
         index += 1;
         if (index >= history.size()) {
@@ -55,25 +60,30 @@ public class ReversibleRandom {
         else {
             seed = history.get(index);
         }
+        onRecord = true;
     }
 
     public void resetGenerator() {
         seed = history.get(index);
+        onRecord = true;
     }
 
     public void resetGenerator(int index) {
         Require.between(index, 0, history.size() - 1, "index");
         this.index = index;
         seed = history.get(index);
+        onRecord = true;
     }
 
     public void reverseGenerator() {
         if (inInitialState()) throw new IllegalStateException("cannot reverse from initial state");
         index -= 1;
         seed = history.get(index);
+        onRecord = true;
     }
 
     public long nextLong() {
+        onRecord = false;
         seed ^= (seed << 21);
         seed ^= (seed >>> 35);
         seed ^= (seed << 4);
@@ -148,7 +158,7 @@ public class ReversibleRandom {
 
     @Override
     public String toString() {
-        return String.format("ReversibleRandom(seed = %dL, history = %s, index = %d)", seed, history, index);
+        return String.format("ReversibleRandom(seed = %dL, history = %s, index = %d, onRecord = %b)", seed, history, index, onRecord);
     }
 
 }
