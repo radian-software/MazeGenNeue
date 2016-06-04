@@ -448,6 +448,7 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
 
     @Override
     public void resetGeneration() {
+        resetWalls(true);
         random.resetGenerator(0);
         unsetEntranceAndExit();
         visitedCells.clear();

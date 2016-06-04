@@ -40,15 +40,25 @@ public class ArrayMaze implements Maze {
         this(shape, false);
     }
 
-    public ArrayMaze(int[] shape, boolean hasWalls) {
+    public ArrayMaze(int[] shape, boolean internalWalls) {
         Require.nonEmpty(shape, "shape");
         this.shape = shape;
         int[] internalShape = new int[shape.length];
         for (int i=0; i<shape.length; i++) {
             internalShape[i] = shape[i] + 1;
         }
-        if (hasWalls) {
-            cells = new MultiDimensionalArray<>(internalShape, indices -> {
+        cells = new MultiDimensionalArray<MazeCell>(internalShape);
+        resetWalls(internalWalls);
+    }
+
+    /**
+     * Adds the walls that form the bounding box of the Maze, and removes any walls outside this area. If
+     * internalWalls is true, adds walls in every possible position inside the bounding box; if internalWalls
+     * is false, removes walls in these positions.
+     */
+    protected void resetWalls(boolean internalWalls) {
+        if (internalWalls) {
+            cells.fill(indices -> {
                 // Internal cells will have all of their negative-facing walls present. External cells
                 // (the ones on the far positive edges of the cell matrix) are more interesting:
                 // Depending on their position, they may have either zero or one negative-facing walls
@@ -58,7 +68,7 @@ public class ArrayMaze implements Maze {
                 int edgeDimension = -1;
                 boolean multipleEdges = false;
                 for (int d=0; d<shape.length; d++) {
-                    if (indices[d] == internalShape[d] - 1) {
+                    if (indices[d] == cells.getShape()[d] - 1) {
                         if (edgeDimension == -1) {
                             edgeDimension = d;
                         }
@@ -81,18 +91,18 @@ public class ArrayMaze implements Maze {
             });
         }
         else {
-            cells = new MultiDimensionalArray<>(internalShape, indices -> {
+            cells.fill(indices -> {
                 MazeCell cell = new MazeCell(shape.length);
                 for (int dimension = 0; dimension < shape.length; dimension++) {
                     // we add a wall to the cells on the far negative and far positive edges of the
                     // matrix
-                    if (indices[dimension] == 0 || indices[dimension] == internalShape[dimension] - 1) {
+                    if (indices[dimension] == 0 || indices[dimension] == cells.getShape()[dimension] - 1) {
                         boolean addWall = true;
                         // however, we don't add a wall if the cell is on one far negative edge and
                         // one far positive edge, or if the cell is on two far positive edges
                         for (int otherDimension = 0; otherDimension < shape.length; otherDimension++) {
                             if (otherDimension != dimension
-                                    && indices[otherDimension] == internalShape[otherDimension] - 1) {
+                                    && indices[otherDimension] == cells.getShape()[otherDimension] - 1) {
                                 addWall = false;
                                 break;
                             }
