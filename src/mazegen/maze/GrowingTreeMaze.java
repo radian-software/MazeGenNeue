@@ -308,6 +308,8 @@ public class GrowingTreeMaze extends ArrayMaze implements ReversibleGeneratingSo
         unsetEntranceAndExit();
         visitedCells.clear();
         visitedCellMatrix.fill(false);
+        completedCells.clear();
+        pathDirections.clear();
         state = State.PLACE_ROOT;
         remainingCells = getSize();
     }
