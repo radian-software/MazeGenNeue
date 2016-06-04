@@ -24,6 +24,7 @@ public class RangeSupplier implements Supplier<Integer> {
         this.step = step;
     }
 
+    @Override
     public Integer get() {
         return current++;
     }
