@@ -1,5 +1,9 @@
 # MazeGen Neue
 
-This project is a work-in-progress reimagining of [MazeGen].
-
-[mazegen]: https://github.com/raxod502/MazeGen
+[MazeGen](https://github.com/raxod502/MazeGen) was a cool project, but
+it was also a bit of a mess. This repository was an attempt to
+reimplement it in a more extensible fashion. Unfortunately, I think it
+kind of turned into [Enterprise
+FizzBuzz](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition),
+and I eventually abandoned the project. So you should just refer to
+[MazeGen](https://github.com/raxod502/MazeGen).
