@@ -1,4 +1,4 @@
-// Copyright (c) 2016 by Radon Rosborough. All rights reserved.
+// Copyright (c) 2016 Radian LLC and contributors.
 package mazegen.maze;
 
 import mazegen.util.MultiDimensionalArray;
